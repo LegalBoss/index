@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <title>Confronta Immagini con PE CINE SUSTII?</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      padding: 20px;
+      background: linear-gradient(to bottom, #444, #000);
+      color: white;
+    }
+    h1 {
+      margin-bottom: 30px;
+    }
+    .container {
+      display: flex;
+      justify-content: space-around;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+    }
+    .image-box {
+      margin: 20px;
+      border: 1px solid #888;
+      padding: 10px;
+      border-radius: 10px;
+      background: #222;
+    }
+    .main-img {
+      width: 120px;
+    }
+    .small-img {
+      width: 80px;
+    }
+    img {
+      height: auto;
+      display: block;
+      margin: 10px auto;
+    }
+    .controls {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 10px;
+      margin-top: 10px;
+    }
+    button {
+      font-size: 18px;
+      padding: 5px 10px;
+      background-color: #555;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #777;
+    }
+    .score {
+      font-size: 24px;
+      width: 50px;
+      text-align: center;
+    }
+    input[type="file"] {
+      margin: 10px 0;
+      color: white;
+    }
+    #resetBtn {
+      margin-top: 20px;
+      font-size: 18px;
+      padding: 10px 20px;
+      background-color: #e74c3c;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    #resetBtn:hover {
+      background-color: #c0392b;
+    }
+  </style>
+</head>
+<body>
+
+<h1>PE CINE SUSTII?</h1>
+
+<!-- Immagini principali -->
+<div class="container">
+  <div class="image-box">
+    <input type="file" accept="image/*" onchange="loadImage(event, 0)">
+    <img id="img0" class="main-img" src="https://via.placeholder.com/120x90.png?text=Immagine+1" alt="Immagine 1">
+  </div>
+
+  <div class="image-box">
+    <input type="file" accept="image/*" onchange="loadImage(event, 1)">
+    <img id="img1" class="main-img" src="https://via.placeholder.com/120x90.png?text=Immagine+2" alt="Immagine 2">
+  </div>
+</div>
+
+<!-- Punteggi -->
+<div class="container">
+  <div class="controls">
+    <button onclick="changeScore(0, -1)">–</button>
+    <div id="score0" class="score">0</div>
+    <button onclick="changeScore(0, 1)">+</button>
+  </div>
+
+  <button id="resetBtn" onclick="resetScores()">Reset</button>
+
+  <div class="controls">
+    <button onclick="changeScore(1, -1)">–</button>
+    <div id="score1" class="score">0</div>
+    <button onclick="changeScore(1, 1)">+</button>
+  </div>
+</div>
+
+<!-- Immagini più piccole -->
+<div class="container">
+  <div class="image-box">
+    <input type="file" accept="image/*" onchange="loadImage(event, 2)">
+    <img id="img2" class="small-img" src="https://via.placeholder.com/80x60.png?text=Piccola+1" alt="Piccola 1">
+  </div>
+
+  <div class="image-box">
+    <input type="file" accept="image/*" onchange="loadImage(event, 3)">
+    <img id="img3" class="small-img" src="https://via.placeholder.com/80x60.png?text=Piccola+2" alt="Piccola 2">
+  </div>
+</div>
+
+<script>
+  let scores = [0, 0];
+
+  function changeScore(index, delta) {
+    scores[index] += delta;
+    document.getElementById('score' + index).textContent = scores[index];
+  }
+
+  function loadImage(event, index) {
+    const reader = new FileReader();
+    reader.onload = function() {
+      document.getElementById('img' + index).src = reader.result;
+    };
+    reader.readAsDataURL(event.target.files[0]);
+  }
+
+  function resetScores() {
+    scores = [0, 0];
+    document.getElementById('score0').textContent = '0';
+    document.getElementById('score1').textContent = '0';
+  }
+</script>
+
+</body>
+</html>
