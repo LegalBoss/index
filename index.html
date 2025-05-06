@@ -19,6 +19,7 @@
       justify-content: space-around;
       flex-wrap: wrap;
       margin-bottom: 20px;
+      align-items: center;
     }
     .image-box {
       margin: 20px;
@@ -79,17 +80,35 @@
     #resetBtn:hover {
       background-color: #c0392b;
     }
+    .disclaimer-inline {
+      max-width: 220px;
+      font-size: 14px;
+      line-height: 1.4;
+      margin: 0 10px;
+      background: #111;
+      padding: 10px;
+      border-radius: 10px;
+      border: 1px solid #666;
+    }
   </style>
 </head>
 <body>
 
 <h1>PE CINE SUSTII?</h1>
 
-<!-- Immagini principali -->
+<!-- Immagini principali con disclaimer tra le due -->
 <div class="container">
   <div class="image-box">
     <input type="file" accept="image/*" onchange="loadImage(event, 0)">
     <img id="img0" class="main-img" src="https://via.placeholder.com/120x90.png?text=Immagine+1" alt="Immagine 1">
+  </div>
+
+  <div class="disclaimer-inline">
+    <strong>DISCLAIMER:</strong><br>
+    Acest sondaj este doar <br> pentru divertisment. <br>
+    Nu este un sondaj oficial si<br> nu are legatura cu alegerile reale. <br>
+    Donatiile sunt pentru <br>sustinerea creatorului si <br> nu reprezinta sprijin financiar<br>
+    pentru niciun candidat sau partid politic.
   </div>
 
   <div class="image-box">
