@@ -1,259 +1,220 @@
-<!DOCTYPE html>
-<html lang="it">
+<!DOCTYPE html><html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Confronta Immagini con PE CINE SUSTII?</title>
+  <title>Guess the Footballer</title>
+  <!-- Aggiungi jQuery e jQuery UI -->
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+  <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
   <style>
     body {
+      background-color: #f5f5f5; /* Bianco/grigio chiaro */
+      color: #333; /* Testo scuro per contrasto */
       font-family: Arial, sans-serif;
       text-align: center;
       padding: 20px;
-      background: linear-gradient(to bottom, #444, #000);
-      color: white;
     }
     h1 {
-      margin-bottom: 30px;
+      color: #333; /* Titolo scuro */
+      text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1); /* Ombra leggera */
     }
-    .container {
-      display: flex;
-      justify-content: space-around;
-      flex-wrap: wrap;
-      margin-bottom: 20px;
-      align-items: center;
+    video {
+      width: 80%;
+      max-width: 600px;
+      filter: blur(12px);
+      transition: filter 0.4s ease;
+      border: 2px solid #00cc00; /* Bordo verde ispirato a Who Are Ya? */
+      border-radius: 8px;
+      background-color: #fff; /* Sfondo bianco per il video */
     }
-    .image-box {
-      margin: 20px;
-      border: 1px solid #888;
+    input, button {
+      font-size: 18px;
       padding: 10px;
-      border-radius: 10px;
-      background: #222;
-    }
-    .main-img {
-      width: 120px;
-    }
-    .small-img {
-      width: 80px;
-    }
-    img {
-      height: auto;
-      display: block;
-      margin: 10px auto;
-    }
-    .controls {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      gap: 10px;
       margin-top: 10px;
+      border-radius: 6px; /* Bordi arrotondati */
+    }
+    input {
+      border: 2px solid #00cc00; /* Bordo verde */
+      background-color: #ffffff; /* Sfondo bianco */
+      color: #333; /* Testo scuro */
     }
     button {
-      font-size: 18px;
-      padding: 5px 10px;
-      background-color: #555;
-      color: white;
-      border: none;
-      border-radius: 5px;
+      background-color: #00cc00; /* Verde brillante */
+      color: #ffffff; /* Testo bianco */
+      border: 2px solid #009900; /* Bordo verde più scuro */
       cursor: pointer;
+      transition: background-color 0.3s ease;
     }
     button:hover {
-      background-color: #777;
+      background-color: #009900; /* Verde più scuro al passaggio del mouse */
     }
-    .score {
-      font-size: 24px;
-      width: 50px;
-      text-align: center;
+    input:disabled, button:disabled {
+      background-color: #ccc;
+      color: #666;
+      border-color: #999;
+      cursor: not-allowed;
     }
-    input[type="file"] {
-      margin: 10px 0;
-      color: white;
-    }
-    #resetBtn {
+    #message {
       margin-top: 20px;
-      font-size: 18px;
-      padding: 10px 20px;
-      background-color: #e74c3c;
-      color: white;
-      border: none;
-      border-radius: 8px;
+      font-size: 20px;
+      color: #333; /* Testo scuro */
+      text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1); /* Ombra leggera */
+    }
+    .ui-autocomplete {
+      max-height: 200px;
+      overflow-y: auto;
+      overflow-x: hidden;
+      background-color: #ffffff; /* Sfondo bianco */
+      color: #333; /* Testo scuro */
+      border: 2px solid #00cc00; /* Bordo verde */
+      border-radius: 4px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+    .ui-menu-item {
+      padding: 10px;
       cursor: pointer;
     }
-    #resetBtn:hover {
-      background-color: #c0392b;
+    .ui-menu-item:hover {
+      background-color: #e0e0e0; /* Grigio chiaro al passaggio del mouse */
     }
-    .disclaimer-inline {
-      max-width: 220px;
-      font-size: 14px;
-      line-height: 1.4;
-      margin: 0 10px;
-      background: #111;
-      padding: 10px;
-      border-radius: 10px;
-      border: 1px solid #666;
+    .ad-banner {
+      margin: 20px auto;
+      background-color: #ddd;
+      border: 2px dashed #00cc00;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #333;
+      font-weight: bold;
     }
-    canvas#fireworksCanvas {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      pointer-events: none;
-      z-index: 999;
+    #ad-top {
+      width: 728px;
+      height: 90px;
     }
   </style>
 </head>
 <body>
 
-<h1 contenteditable="true" spellcheck="false" style="outline: none;">Scrivi qui il titolo</h1>
+  <!-- Banner pubblicitario sopra il video -->
+  <div id="ad-top" class="ad-banner">Ad Placeholder (728x90)</div>
 
+  <h1>Who's in the video?</h1>
 
-<!-- Immagini principali -->
-<div class="container">
-  <div class="image-box">
-    <input type="file" accept="image/*" onchange="loadImage(event, 0)">
-    <img id="img0" class="main-img" src="https://via.placeholder.com/120x90.png?text=Immagine+1" alt="Immagine 1">
+  <video id="video" autoplay muted loop>
+    <source id="videoSource" src="" type="video/mp4">
+    Your browser does not support the video tag.
+  </video>
+
+  <div>
+    <input type="text" id="guess" placeholder="Type the name...">
+    <button id="submitBtn" onclick="checkGuess()">Submit</button>
+    <button id="newVideoBtn" onclick="loadNewVideo()">New Video</button>
   </div>
 
-  <div class="disclaimer-inline">
-    <strong>DISCLAIMER:</strong><br>
-    Acest sondaj este doar <br> pentru divertisment. <br>
-    Nu este un sondaj oficial si<br> nu are legatura cu alegerile reale. <br>
-    Donatiile sunt pentru <br>sustinerea creatorului si <br> nu reprezinta sprijin financiar<br>
-    pentru niciun candidat sau partid politic.
-  </div>
+  <p id="message"></p>
 
-  <div class="image-box">
-    <input type="file" accept="image/*" onchange="loadImage(event, 1)">
-    <img id="img1" class="main-img" src="https://via.placeholder.com/120x90.png?text=Immagine+2" alt="Immagine 2">
-  </div>
-</div>
+  <script>
+    // Elenco di video e risposte corrette
+    const videos = [
+      { src: "video-messi.mp4", answer: "Messi" },
+      { src: "video-ronaldo.mp4", answer: "Cristiano Ronaldo" },
+      { src: "video-neymar.mp4", answer: "Neymar" },
+    { src: "video-modric.mp4", answer: "Modric" },
+    { src: "video-benzema.mp4", answer: "Benzema" }
 
-<!-- Punteggi -->
-<div class="container">
-  <div class="controls">
-    <button onclick="changeScore(0, -1)">–</button>
-    <div id="score0" class="score">0</div>
-    <button onclick="changeScore(0, 1)">+</button>
-  </div>
+      // Aggiungi altri video qui, es. { src: "video-mbappe.mp4", answer: "Mbappe" }
+    ];
 
-  <button id="resetBtn" onclick="resetScores()">Reset</button>
+    // Elenco di 50 calciatori per l'autocompletamento
+    const footballPlayers = [
+      "Messi", "Cristiano Ronaldo", "Neymar", "Mbappe", "Salah",
+      "De Bruyne", "Lewandowski", "Kane", "Haaland", "Modric",
+      "Benzema", "Suarez", "Ibrahimovic", "Pogba", "Griezmann",
+      "Mane", "Van Dijk", "Alisson", "Ronaldinho", "Zidane",
+      "Henry", "Kaka", "Iniesta", "Xavi", "Ramos",
+      "Casillas", "Buffon", "Alves", "Villa", "Torres",
+      "Drogba", "Robben", "Lampard", "Gerrard", "Beckham",
+      "Pirlo", "Totti", "Del Piero", "Raul", "Shevchenko",
+      "Aguero", "Di Maria", "Bale", "Neuer", "Kroos",
+      "Coutinho", "Sterling", "Kante", "Bellingham", "Vinicius"
+    ];
 
-  <div class="controls">
-    <button onclick="changeScore(1, -1)">–</button>
-    <div id="score1" class="score">0</div>
-    <button onclick="changeScore(1, 1)">+</button>
-  </div>
-</div>
+    const videoElement = document.getElementById("video");
+    const videoSource = document.getElementById("videoSource");
+    const guessInput = document.getElementById("guess");
+    const submitBtn = document.getElementById("submitBtn");
+    const newVideoBtn = document.getElementById("newVideoBtn");
+    const message = document.getElementById("message");
 
-<!-- Immagini piccole -->
-<div class="container">
-  <div class="image-box">
-    <input type="file" accept="image/*" onchange="loadImage(event, 2)">
-    <img id="img2" class="small-img" src="https://via.placeholder.com/80x60.png?text=Piccola+1" alt="Piccola 1">
-  </div>
+    let currentVideo = null;
+    let attempt = 0;
+    const maxAttempts = 3;
+    const blurLevels = [12, 7, 3, 0]; // px
 
-  <div class="image-box">
-    <input type="file" accept="image/*" onchange="loadImage(event, 3)">
-    <img id="img3" class="small-img" src="https://via.placeholder.com/80x60.png?text=Piccola+2" alt="Piccola 2">
-  </div>
-</div>
-
-<!-- Canvas per i fuochi d'artificio -->
-<canvas id="fireworksCanvas"></canvas>
-
-<script>
-  let scores = [0, 0];
-  const canvas = document.getElementById('fireworksCanvas');
-  const ctx = canvas.getContext('2d');
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
-
-  class Firework {
-    constructor(x, y, color) {
-      this.particles = [];
-      for (let i = 0; i < 100; i++) {
-        this.particles.push({
-          x: x,
-          y: y,
-          angle: Math.random() * 2 * Math.PI,
-          speed: Math.random() * 5 + 2,
-          radius: Math.random() * 3 + 1,
-          alpha: 1,
-          color: color
-        });
-      }
-    }
-
-    update() {
-      this.particles.forEach(p => {
-        p.x += Math.cos(p.angle) * p.speed;
-        p.y += Math.sin(p.angle) * p.speed;
-        p.alpha -= 0.01;
+    // Inizializza l'autocompletamento
+    $(document).ready(function() {
+      $("#guess").autocomplete({
+        source: footballPlayers,
+        minLength: 2,
+        autoFocus: true
       });
-      this.particles = this.particles.filter(p => p.alpha > 0);
-    }
-
-    draw(ctx) {
-      this.particles.forEach(p => {
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, p.radius, 0, 2 * Math.PI);
-        ctx.fillStyle = `rgba(${p.color},${p.alpha})`;
-        ctx.fill();
-      });
-    }
-  }
-
-  let fireworks = [];
-
-  function launchFireworks() {
-    for (let i = 0; i < 5; i++) {
-      const x = Math.random() * canvas.width;
-      const y = Math.random() * canvas.height / 2;
-      const color = `${Math.floor(Math.random()*255)},${Math.floor(Math.random()*255)},${Math.floor(Math.random()*255)}`;
-      fireworks.push(new Firework(x, y, color));
-    }
-  }
-
-  function animateFireworks() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    fireworks.forEach(f => {
-      f.update();
-      f.draw(ctx);
+      loadNewVideo(); // Carica il primo video all'avvio
     });
-    fireworks = fireworks.filter(f => f.particles.length > 0);
-    if (fireworks.length > 0) {
-      requestAnimationFrame(animateFireworks);
+
+    function loadNewVideo() {
+      // Resetta il gioco
+      attempt = 0;
+      guessInput.value = "";
+      guessInput.disabled = false;
+      submitBtn.disabled = false;
+      newVideoBtn.disabled = false;
+      message.textContent = "";
+      videoElement.style.filter = `blur(${blurLevels[0]}px)`;
+
+      // Seleziona un video casuale
+      currentVideo = videos[Math.floor(Math.random() * videos.length)];
+      
+      // Aggiorna la sorgente del video
+      videoSource.src = currentVideo.src;
+      videoElement.load(); // Ricarica il video
+      videoElement.play(); // Avvia la riproduzione
     }
-  }
 
-  function changeScore(index, delta) {
-    scores[index] += delta;
-    document.getElementById('score' + index).textContent = scores[index];
-
-    if (scores[index] === 1000) {
-      launchFireworks();
-      animateFireworks();
+    function disableInput() {
+      guessInput.disabled = true;
+      submitBtn.disabled = true;
     }
-  }
 
-  function loadImage(event, index) {
-    const reader = new FileReader();
-    reader.onload = function() {
-      document.getElementById('img' + index).src = reader.result;
-    };
-    reader.readAsDataURL(event.target.files[0]);
-  }
+    function checkGuess() {
+      const guess = guessInput.value.toLowerCase().trim();
+      const correctAnswer = currentVideo.answer.toLowerCase();
+      const capitalizedGuess = guess.charAt(0).toUpperCase() + guess.slice(1);
 
-  function resetScores() {
-    scores = [0, 0];
-    document.getElementById('score0').textContent = '0';
-    document.getElementById('score1').textContent = '0';
-  }
+      if (guess === correctAnswer) {
+        videoElement.style.filter = "blur(0px)";
+        message.textContent = ` Correct! It was ${currentVideo.answer}!`;
+        disableInput();
+      } else {
+        attempt++;
+        if (attempt < maxAttempts) {
+          videoElement.style.filter = `blur(${blurLevels[attempt]}px)`;
+          message.textContent = ` Wrong! Try again. (${maxAttempts - attempt} attempt${maxAttempts - attempt === 1 ? '' : 's'} left)`;
+        } else {
+          videoElement.style.filter = "blur(0px)";
+          message.textContent = ` You got it wrong! You ran out of attempts. The correct answer was: ${currentVideo.answer}.`;
+          disableInput();
+        }
+      }
+      guessInput.value = ""; // Pulisci l'input
+    }
 
-  window.addEventListener('resize', () => {
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-  });
-</script>
+    // Allow Enter key to submit
+    guessInput.addEventListener("keydown", function(event) {
+      if (event.key === "Enter" && !guessInput.disabled) {
+        checkGuess();
+      }
+    });
+  </script>
 
 </body>
 </html>
